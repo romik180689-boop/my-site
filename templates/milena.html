@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="milena-page">
-    <!-- Свечение на фоне -->
     <div class="glow glow-1" style="background: #ff416c;"></div>
     <div class="glow glow-2" style="background: #ff4b2b;"></div>
 
@@ -24,18 +23,30 @@
             </p>
         </div>
 
-        <div class="glass-card fade-in" style="margin-top: 30px; text-align: center;">
-            <h3>Наша песня 🎵</h3>
-            <p style="margin-bottom: 15px; color: #a0a0b5;">Нажми play и вспомни нас</p>
-            <audio controls style="width: 100%; max-width: 400px;">
-                <source src="{{ url_for('static', filename='our_song.mp3') }}" type="audio/mpeg">
-                Твой браузер не поддерживает аудио.
-            </audio>
+        <!-- СЧЕТЧИК ДНЕЙ -->
+        <div class="glass-card fade-in" style="text-align: center; margin-top: 30px; border-color: rgba(255, 65, 108, 0.3);">
+            <h3>Мы вместе уже:</h3>
+            <div class="counter-number" id="days-counter" style="font-size: 70px; font-weight: 800; background: linear-gradient(135deg, #ff416c, #ff4b2b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.2; margin: 10px 0;">0</div>
+            <p style="color: #a0a0b5;">дней счастья</p>
         </div>
 
         <div style="text-align: center; margin-top: 40px;" class="fade-in">
             <a href="/" class="btn">Вернуться на главную</a>
         </div>
     </div>
+
+    <!-- Скрипт для подсчета дней -->
+    <script>
+        // ВАЖНО: Укажи здесь вашу дату (год, месяц-1, день)
+        // Месяцы считаются с 0! То есть 10 - это ноябрь, 9 - это октябрь.
+        // Пример: 11 ноября 2025 года -> new Date(2025, 10, 11)
+        const startDate = new Date(2025, 10, 11); 
+        
+        const today = new Date();
+        const diffTime = Math.abs(today - startDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+        
+        document.getElementById('days-counter').innerText = diffDays;
+    </script>
 </body>
 </html>
