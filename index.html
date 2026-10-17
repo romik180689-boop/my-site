@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Роман — Разработчик</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Привет, я Роман</h1>
+        <p>Начинающий разработчик</p>
+    </header>
+
+    <main>
+        <section class="about">
+            <img src="{{ url_for('static', filename='photo.jpg') }}" alt="Моё фото">
+            <div class="text">
+                <h2>Обо мне</h2>
+                <p>Я учусь программировать и делаю крутые проекты. Умею создавать Telegram-ботов на Python и игры в Roblox.</p>
+            </div>
+        </section>
+
+        <section class="projects">
+            <h2>Мои проекты</h2>
+
+            <div class="project-card">
+                <h3>Трекер калорий</h3>
+                <p>Умный Telegram-бот для подсчёта КБЖУ и контроля питания. Считает калории по тексту или фото.</p>
+                <a href="https://t.me/calories_day_bot" class="btn" target="_blank">Открыть бота</a>
+            </div>
+
+            <div class="project-card">
+                <h3>Нейросеть GigaChat</h3>
+                <p>AI-бот с поиском в интернете, генерацией картинок и актуальными ответами на любые вопросы.</p>
+                <a href="https://t.me/ph0toai_bot" class="btn" target="_blank">Открыть бота</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <h2>Связаться со мной</h2>
+        <p>Telegram: <a href="https://t.me/твой_ник">@yy3eeee</a></p>
+        <p>&copy; 2026 Роман</p>
+    </footer>
+</body>
+</html>
