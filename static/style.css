@@ -235,3 +235,24 @@ body {
     .about { flex-direction: column; text-align: center; }
     .section-title { font-size: 28px; text-align: center; border-left: none; border-bottom: 3px solid #667eea; padding: 0 0 10px 0; }
 }
+/* Секретное сердечко */
+.secret-heart-container {
+    text-align: center;
+    padding: 20px 0 40px 0;
+}
+
+.secret-heart {
+    font-size: 24px;
+    color: #333; /* Темный цвет, чтобы его не было видно на темном фоне */
+    text-decoration: none;
+    transition: all 0.5s ease;
+    display: inline-block;
+    filter: drop-shadow(0 0 0 transparent);
+}
+
+/* Эффект при наведении */
+.secret-heart:hover {
+    color: #ff416c; /* Становится ярко-красным */
+    transform: scale(1.5); /* Увеличивается */
+    filter: drop-shadow(0 0 15px #ff416c); /* Начинает светиться */
+}
