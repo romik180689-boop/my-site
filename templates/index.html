@@ -4,17 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Роман — Разработчик</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <header>
-        <h1>Привет, я Роман</h1>
-        <p>Начинающий разработчик</p>
+    <!-- Свечение на фоне -->
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+
+    <header class="header">
+        <div class="container">
+            <h1 class="title">Привет, я Роман</h1>
+            <p class="subtitle">Начинающий разработчик</p>
+        </div>
     </header>
 
-    <main>
-        <section class="about">
-            <img src="{{ url_for('static', filename='photo.jpg') }}" alt="Моё фото">
+    <main class="container">
+        <section class="about glass-card fade-in">
+            <div class="photo-wrapper">
+                <img src="{{ url_for('static', filename='photo.jpg') }}" alt="Моё фото" class="photo">
+            </div>
             <div class="text">
                 <h2>Обо мне</h2>
                 <p>Я учусь программировать и делаю крутые проекты. Умею создавать Telegram-ботов на Python и игры в Roblox.</p>
@@ -22,26 +33,30 @@
         </section>
 
         <section class="projects">
-            <h2>Мои проекты</h2>
+            <h2 class="section-title fade-in">Мои проекты</h2>
 
-            <div class="project-card">
-                <h3>Трекер калорий</h3>
-                <p>Умный Telegram-бот для подсчёта КБЖУ и контроля питания. Считает калории по тексту или фото.</p>
-                <a href="https://t.me/calories_day_bot" class="btn" target="_blank">Открыть бота</a>
-            </div>
+            <div class="project-grid">
+                <div class="project-card glass-card fade-in">
+                    <h3>Трекер калорий</h3>
+                    <p>Умный Telegram-бот для подсчёта КБЖУ и контроля питания. Считает калории по тексту или фото.</p>
+                    <a href="https://t.me/calories_day_bot" class="btn" target="_blank">Открыть бота</a>
+                </div>
 
-            <div class="project-card">
-                <h3>Нейросеть GigaChat</h3>
-                <p>AI-бот с поиском в интернете, генерацией картинок и актуальными ответами на любые вопросы.</p>
-                <a href="https://t.me/ph0toai_bot" class="btn" target="_blank">Открыть бота</a>
+                <div class="project-card glass-card fade-in">
+                    <h3>Нейросеть GigaChat</h3>
+                    <p>AI-бот с поиском в интернете, генерацией картинок и актуальными ответами на любые вопросы.</p>
+                    <a href="https://t.me/ph0toai_bot" class="btn" target="_blank">Открыть бота</a>
+                </div>
             </div>
         </section>
     </main>
 
-    <footer>
-        <h2>Связаться со мной</h2>
-        <p>Telegram: <a href="https://t.me/твой_ник">@yy3eeee</a></p>
-        <p>&copy; 2026 Роман</p>
+    <footer class="footer fade-in">
+        <div class="container">
+            <h2>Связаться со мной</h2>
+            <p>Telegram: <a href="https://t.me/твой_ник" target="_blank">@твой_ник</a></p>
+            <p class="copyright">&copy; 2026 Роман</p>
+        </div>
     </footer>
 </body>
 </html>
