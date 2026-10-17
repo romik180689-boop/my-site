@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Для Милены ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="milena-page">
+    <!-- Свечение на фоне -->
+    <div class="glow glow-1" style="background: #ff416c;"></div>
+    <div class="glow glow-2" style="background: #ff4b2b;"></div>
+
+    <div class="container secret-container">
+        <h1 class="secret-title fade-in">Для тебя, Милена</h1>
+        
+        <div class="glass-card fade-in" style="text-align: center; margin-top: 30px;">
+            <p style="font-size: 22px; font-family: 'Playfair Display', serif; font-style: italic; color: #ff8a00;">
+                "Ты — самое лучшее, что случилось со мной."
+            </p>
+            <p style="margin-top: 20px; color: #c0c0d0;">
+                Спасибо, что ты рядом. Этот сайт — маленький кусочек моего мира, и я хочу, чтобы ты была в нём.
+            </p>
+        </div>
+
+        <div class="glass-card fade-in" style="margin-top: 30px; text-align: center;">
+            <h3>Наша песня 🎵</h3>
+            <p style="margin-bottom: 15px; color: #a0a0b5;">Нажми play и вспомни нас</p>
+            <audio controls style="width: 100%; max-width: 400px;">
+                <source src="{{ url_for('static', filename='our_song.mp3') }}" type="audio/mpeg">
+                Твой браузер не поддерживает аудио.
+            </audio>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;" class="fade-in">
+            <a href="/" class="btn">Вернуться на главную</a>
+        </div>
+    </div>
+</body>
+</html>
