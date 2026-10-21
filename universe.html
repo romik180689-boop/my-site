@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universe // Свободный полет</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #000; }
+        canvas { display: block; }
+        .back-btn {
+            position: absolute;
+            top: 20px; left: 20px;
+            padding: 10px 20px;
+            background: rgba(0, 242, 254, 0.2);
+            border: 1px solid #00f2fe;
+            color: #00f2fe;
+            text-decoration: none;
+            font-family: sans-serif;
+            font-weight: bold;
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
+            z-index: 10;
+        }
+        .back-btn:hover { background: #00f2fe; color: #000; box-shadow: 0 0 20px #00f2fe; }
+        .hint { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); color: rgba(255, 255, 255, 0.5); font-family: sans-serif; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">← Назад</a>
+    <div class="hint">Зажми ЛКМ и двигай мышкой. Колесико — зум.</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 4000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+        document.body.appendChild(renderer.domElement);
+
+        // --- ЗВЕЗДЫ ---
+        const starsGeometry = new THREE.BufferGeometry();
+        const starsCount = 5000;
+        const posArray = new Float32Array(starsCount * 3);
+        for (let i = 0; i < starsCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 4000;
+        }
+        starsGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const starsMaterial = new THREE.PointsMaterial({ size: 1.5, color: 0xffffff, transparent: true, opacity: 0.8 });
+        const starMesh = new THREE.Points(starsGeometry, starsMaterial);
+        scene.add(starMesh);
+
+        // --- СВЕТ ---
+        const ambientLight = new THREE.AmbientLight(0xffffff, 2.0);
+        scene.add(ambientLight);
+
+        const sunLight = new THREE.PointLight(0xffffff, 2.5, 5000);
+        sunLight.position.set(500, 500, 500);
+        scene.add(sunLight);
+
+        // --- ТЕКСТУРЫ ---
+        const loader = new THREE.TextureLoader();
+        loader.crossOrigin = "anonymous";
+
+        const textures = {
+            earth: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_atmos_2048.jpg',
+            earthClouds: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_clouds_1024.png',
+            mars: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/mars_1k_color.jpg',
+            jupiter: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/jupiter_1k_color.jpg',
+            moon: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/moon_1024.jpg',
+            saturn: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/saturn_1k_color.jpg'
+        };
+
+        const planets = [];
+        
+        function createPlanet(textureUrl, size, x, y, z, hasClouds = false, hasRings = false, fallbackColor = 0x888888) {
+            const geometry = new THREE.SphereGeometry(size, 32, 32);
+            
+            // Создаем материал с запасным цветом (если текстура не загрузится, будет этот цвет)
+            const material = new THREE.MeshStandardMaterial({
+                color: fallbackColor, // Запасной цвет
+                roughness: 0.8,
+                metalness: 0.1
+            });
+
+            // Загружаем текстуру
+            const texture = loader.load(
+                textureUrl,
+                (tex) => {
+                    // Когда текстура загрузится, применяем её
+                    material.map = tex;
+                    material.color.setHex(0xffffff); // Сбрасываем запасной цвет
+                    material.needsUpdate = true;
+                }
+            );
+
+            const planet = new THREE.Mesh(geometry, material);
+            planet.position.set(x, y, z);
+            planet.userData = { speed: Math.random() * 0.005 + 0.001, hasClouds: hasClouds };
+            
+            scene.add(planet);
+
+            if (hasClouds) {
+                const cloudGeo = new THREE.SphereGeometry(size * 1.02, 32, 32);
+                const cloudMat = new THREE.MeshBasicMaterial({
+                    map: loader.load(textures.earthClouds),
+                    transparent: true,
+                    opacity: 0.4,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false
+                });
+                const clouds = new THREE.Mesh(cloudGeo, cloudMat);
+                planet.add(clouds);
+                planet.userData.clouds = clouds;
+            }
+
+            if (hasRings) {
+                const ringGeo = new THREE.RingGeometry(size * 1.4, size * 2.2, 32);
+                const ringMat = new THREE.MeshBasicMaterial({
+                    color: 0xd4c29b,
+                    side: THREE.DoubleSide,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const ring = new THREE.Mesh(ringGeo, ringMat);
+                ring.rotation.x = Math.PI / 2;
+                planet.add(ring);
+            }
+
+            planets.push(planet);
+            return planet;
+        }
+
+        // --- ПЛАНЕТЫ (Указан запасной цвет) ---
+        // Земля (Синий запасной)
+        createPlanet(textures.earth, 40, 150, 100, -200, true, false, 0x2288ff);
+        
+        // Марс (Красный запасной)
+        createPlanet(textures.mars, 25, -200, 150, -250, false, false, 0xff4422);
+        
+        // Юпитер (Оранжевый запасной)
+        createPlanet(textures.jupiter, 70, -350, -150, -500, false, false, 0xffaa00);
+        
+        // Сатурн (Желтый запасной)
+        createPlanet(textures.saturn, 55, 400, -200, -400, false, true, 0xffdd00);
+        
+        // Луна (Серый запасной)
+        createPlanet(textures.moon, 12, 180, 120, -200, false, false, 0xaaaaaa);
+
+        // --- УПРАВЛЕНИЕ ---
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        let rotation = { x: 0, y: 0 };
+        let targetRotation = { x: 0, y: 0 };
+
+        document.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            previousMousePosition = { x: e.offsetX, y: e.offsetY };
+        });
+
+        document.addEventListener('mouseup', () => { isDragging = false; });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const deltaMove = {
+                    x: e.offsetX - previousMousePosition.x,
+                    y: e.offsetY - previousMousePosition.y
+                };
+                targetRotation.y += deltaMove.x * 0.005;
+                targetRotation.x += deltaMove.y * 0.005;
+                targetRotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, targetRotation.x));
+                previousMousePosition = { x: e.offsetX, y: e.offsetY };
+            }
+        });
+
+        document.addEventListener('wheel', (e) => {
+            camera.position.z += e.deltaY * 1.5;
+            camera.position.z = Math.max(100, Math.min(2000, camera.position.z));
+        });
+
+        // --- АНИМАЦИЯ ---
+        function animate() {
+            requestAnimationFrame(animate);
+
+            rotation.x += (targetRotation.x - rotation.x) * 0.1;
+            rotation.y += (targetRotation.y - rotation.y) * 0.1;
+
+            starMesh.rotation.x = rotation.x;
+            starMesh.rotation.y = rotation.y;
+
+            planets.forEach(p => {
+                p.rotation.y += p.userData.speed;
+                if (p.userData.clouds) {
+                    p.userData.clouds.rotation.y += p.userData.speed * 1.2;
+                }
+                p.rotation.x = rotation.x * 0.5;
+                p.rotation.y += rotation.y * 0.5;
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
